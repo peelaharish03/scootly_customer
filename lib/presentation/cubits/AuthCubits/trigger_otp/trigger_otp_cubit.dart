@@ -17,7 +17,6 @@ class TriggerOtpCubit extends Cubit<TriggerOtpState> {
       _showErrorDialog(context, 'Please enter a valid mobile number');
       return;
     }
-
     try {
       emit(TriggerOtpLoading());
       final otpEntity = await otpUseCase(mobileNumber);
