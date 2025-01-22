@@ -1,6 +1,6 @@
 const SLIDER1 = 'assets/images/image1.jpg';
 const SLIDER2 = 'assets/images/image3.jpg';
-const SLIDER3 = 'assets/images/image4.png';
+const SLIDER3 = 'assets/images/image4.jpg';
 const SLIDER4 = 'assets/images/image2.png';
 const FINANCE = 'assets/images/finance.png';
 const POLLUTION = 'assets/images/pollution.jpg';

@@ -62,8 +62,8 @@ class _SliderWidgetState extends State<SliderWidget> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentIndex == entry.key
-                        ? AppColor.black // Active dot color
-                        : AppColor.grey.withOpacity(0.2), // Inactive dot color
+                        ? AppColor.black
+                        : AppColor.grey.withOpacity(0.2),
                   ),
                 ),
               );

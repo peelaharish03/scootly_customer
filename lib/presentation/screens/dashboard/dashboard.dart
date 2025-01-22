@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:scootly_customer/core/constants/colors.dart';
 import 'package:scootly_customer/core/constants/img_const.dart';
+import 'package:scootly_customer/widgets/custome_topbar.dart';
+import 'package:scootly_customer/widgets/logout_cnfrm_sheet.dart';
 import 'package:scootly_customer/widgets/slider_widget.dart';
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen();
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Map<String, String>> items = [
     {'name': 'Insurance', 'icon': INSURANCE},
@@ -27,27 +32,94 @@ class DashBoardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColor.green,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: AppColor.green,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Harish Peela',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    'harishpeela03@gmail.com',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const LogOutCnfrmBottomSheet();
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.menu),
-                Icon(Icons.person_outline_outlined),
-              ],
-            ),
+          CustomTopBar(
+            title: '',
+            showBackIcon: false,
+            showMenuIcon: true,
+            showSearchBar: false,
+            showFilterIcon: true,
+            showSkipText: false,
+            onPressMenu: () {
+              _scaffoldKey.currentState!.openDrawer();
+            },
+          ),
+          const SizedBox(
+            height: 10,
           ),
           SliderWidget(),
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          //   child: Text(
-          //     'Dashboard Items',
-          //     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          //   ),
-          // ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -60,37 +132,59 @@ class DashBoardScreen extends StatelessWidget {
                 ),
                 itemCount: items.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 0.5,
+                  return GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(items[index]['name']!),
+                            content: Text(
+                                'You tapped on this ${items[index]['name']!} tab.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                           ),
-                        ),
-                        child: ClipOval(
-                          child: Container(
-                            color: Colors.blueAccent,
-                            child: Image.asset(
-                              items[index]['icon']!,
-                              fit: BoxFit.cover,
+                          child: ClipOval(
+                            child: Container(
+                              color: AppColor.green,
+                              child: Image.asset(
+                                items[index]['icon']!,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        items[index]['name']!,
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          items[index]['name']!,
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
