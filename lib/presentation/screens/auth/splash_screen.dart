@@ -68,25 +68,25 @@ class _SplashScreenState extends State<SplashScreen> {
           if (state is SplashLoaded) {
             final data = state.currentCustomerEntity;
             if (data.status == 'SUCCESS') {
-              // Navigator.pushReplacement(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const Bottomtab()),
-              // );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => DashBoardScreen()),
+              );
             } else {
-              // Navigator.pushReplacement(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => SigninPage(),
-              //   ),
-              // );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SigninPage(),
+                ),
+              );
             }
           } else {
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => SigninPage(),
-            //   ),
-            // );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SigninPage(),
+              ),
+            );
           }
         },
         child: Scaffold(
