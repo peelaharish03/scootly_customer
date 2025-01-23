@@ -13,19 +13,22 @@ class DashBoardScreen extends StatelessWidget {
   final List<Map<String, String>> items = [
     {'name': 'Insurance', 'icon': INSURANCE},
     {'name': 'Pollution', 'icon': POLLUTION},
-    {'name': 'Water Wash', 'icon': WATERWASH},
     {'name': 'Rto Service', 'icon': RTO},
     {'name': 'Finance', 'icon': FINANCE},
     {'name': 'Re-Finance', 'icon': RE_FINANCE},
+    {'name': 'Shopping', 'icon': SHOPPING},
+    {'name': 'E-commers', 'icon': ECOMMERS},
+    {'name': 'Upcoming Products', 'icon': PRODUCTS},
+  ];
+
+  final List<Map<String, String>> itemList = [
+    {'name': 'Water Wash', 'icon': WATERWASH},
     {'name': 'Sale-old vehicle', 'icon': SALE_OLD},
     {'name': 'Buy-New vehicle', 'icon': BUY_CAR},
     {'name': 'Buy-Old vehicle', 'icon': SALE_OLD},
     {'name': 'Petrol', 'icon': PETROL},
     {'name': 'Garage', 'icon': GARAGE},
-    {'name': 'Shopping', 'icon': SHOPPING},
     {'name': 'Spares', 'icon': SPARES},
-    {'name': 'E-commers', 'icon': ECOMMERS},
-    {'name': 'Upcoming Produts', 'icon': PRODUCTS},
     {'name': 'Settings', 'icon': SETTINGS},
   ];
 
@@ -38,9 +41,7 @@ class DashBoardScreen extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColor.green,
-              ),
+              decoration: BoxDecoration(color: AppColor.green),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -76,16 +77,12 @@ class DashBoardScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Home'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -103,7 +100,6 @@ class DashBoardScreen extends StatelessWidget {
         ),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomTopBar(
             title: '',
@@ -112,83 +108,108 @@ class DashBoardScreen extends StatelessWidget {
             showSearchBar: false,
             showFilterIcon: true,
             showSkipText: false,
-            onPressMenu: () {
-              _scaffoldKey.currentState!.openDrawer();
-            },
+            onPressMenu: () => _scaffoldKey.currentState!.openDrawer(),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          SliderWidget(),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 0.8,
-                ),
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(items[index]['name']!),
-                            content: Text(
-                                'You tapped on this ${items[index]['name']!} tab.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 72,
-                          height: 72,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 0.5,
-                            ),
-                          ),
-                          child: ClipOval(
-                            child: Container(
-                              color: AppColor.green,
-                              child: Image.asset(
-                                items[index]['icon']!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          items[index]['name']!,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
-                },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  SliderWidget(),
+                  const SizedBox(height: 10),
+                  _buildGrid(items),
+                  const SizedBox(height: 10),
+                  _buildGrid(itemList),
+                ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGrid(List<Map<String, String>> itemList) {
+    List<List<Map<String, String>>> rows = [];
+    for (int i = 0; i < itemList.length; i += 4) {
+      rows.add(itemList.sublist(
+          i, i + 4 > itemList.length ? itemList.length : i + 4));
+    }
+
+    return Card(
+      color: AppColor.green,
+      elevation: 4,
+      margin: const EdgeInsets.all(16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          itemCount: rows.length,
+          itemBuilder: (context, rowIndex) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: rows[rowIndex].map((item) {
+                  return Expanded(
+                    child: _buildGridItem(item),
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGridItem(Map<String, String> item) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: _scaffoldKey.currentContext!,
+          builder: (context) => AlertDialog(
+            title: Text(item['name']!),
+            content: Text('You tapped on this ${item['name']!} tab.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey, width: 0.5),
+            ),
+            child: ClipOval(
+              child: Container(
+                color: AppColor.white,
+                child: Image.asset(item['icon']!, fit: BoxFit.cover),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            item['name']!,
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColor.white),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
